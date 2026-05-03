@@ -1,74 +1,69 @@
-# Masons Au Pair: Platform Modernization
+# Masons Au Pair: Digital Ecosystem Modernization
 
-**Live Site:** [masons-aupair.com](https://masons-aupair.com/)
+**Production Environment:** [masons-aupair.com](https://masons-aupair.com/)
 
-## Project Overview
+## Executive Summary
 
-I was commissioned as a Freelance Full-Stack & DevOps Engineer to lead the digital transformation of Masons Au Pair. The primary objective was to replace a manual, legacy WordPress-based system with a high-performance, automated, and scalable digital ecosystem.
-
-### The Challenge
-The original platform relied heavily on manual Google Forms and fragmented WordPress plugins, leading to operational bottlenecks in the 10-step au pair matching process. The agency required a secure, centralized portal that could handle complex workflows, document management, and real-time hardware integration for their physical security assets.
-
-### The Solution
-I architected and implemented a decoupled system that separates the business logic from the user interface, ensuring high availability and rapid scalability.
-
-- **Backend:** Laravel 11 API serving a JSON:API compliant structure.
-- **Frontend:** Nuxt.js (Vue 3) with SSR to maintain SEO rankings while providing an SPA-like user experience.
-- **IoT Layer:** An MQTT-based bridge to synchronize physical security hardware with the software platform.
-- **Reliability:** Custom Python monitoring tools to ensure 99.9% uptime and automated failover.
+I was approached by Masons Au Pair to architect and implement a complete digital overhaul. The legacy infrastructure was a monolithic WordPress site coupled with manual data entry points (Google Forms). I transformed this into a high-availability, decoupled ecosystem that integrates modern web technologies with physical IoT security hardware.
 
 ---
 
-## Technical Architecture
+## Technical Deep Dive
 
-### Decoupled Core
-The separation of concerns between Laravel and Nuxt.js allows the agency to scale individual components independently. The API is stateless, utilizing AWS Cognito/Sanctum for secure authentication.
+### 1. Decoupled Micro-Architecture
+The platform is built on a "headless" philosophy. 
+- **Backend (Laravel 11)**: Operates as a purely stateless RESTful API. It utilizes **API Resources** for strict data transformation and **Form Requests** for multi-layered validation. The core logic handles a complex 10-step matching algorithm and secure document orchestration.
+- **Frontend (Nuxt 3)**: Leverages **Server-Side Rendering (SSR)** to ensure sub-second page loads and optimal SEO indexing—critical for the agency's organic growth. State management is handled via **Pinia**, ensuring reactive and consistent data flow across the portal.
 
-### IoT & Hardware Integration
-A custom MQTT service was developed to handle real-time events from security hardware. This allows the platform to trigger software events (like matching updates or access logs) based on physical hardware signals.
+### 2. Event-Driven IoT Integration
+One of the project's most sophisticated features is the real-time hardware synchronization layer.
+- **Protocol**: MQTT (Message Queuing Telemetry Transport) over TLS/SSL.
+- **Logic**: I developed a custom `MqttService` that bridges physical hardware events with Laravel's internal Event System. When a hardware trigger is received, it dispatches an asynchronous **HardwareEventReceived** event, allowing for decoupled processing such as instant notification triggers or status updates.
 
-### Infrastructure (IaC)
-The entire stack is containerized using Docker and deployed via Terraform on AWS ECS (Fargate). This setup ensures that the platform is cost-efficient while maintaining the capacity to handle traffic spikes.
+### 3. Reliability Engineering & Self-Healing
+To guarantee 99.9% uptime, I implemented a custom "Watchdog" monitoring suite in Python.
+- **Service Monitoring**: The tool validates the health of PHP-FPM, Nginx, and the MQTT Broker every 30 seconds.
+- **Automated Recovery**: Upon detecting a service failure, the script initiates an automated recovery sequence (Self-healing).
+- **Log Watchdog**: Real-time tailing of application logs to identify and report `CRITICAL` or `FATAL` errors via Webhooks before users encounter issues.
 
----
-
-## Getting Started (Local Development)
-
-1. Clone the repository.
-2. Ensure Docker is installed.
-3. Run `docker-compose up --build`.
-4. Access the portal at `http://localhost:3000`.
-
----
-
-# Masons Au Pair: Platform Modernizasyonu
-
-**Canlı Site:** [masons-aupair.com](https://masons-aupair.com/)
-
-## Proje Özeti
-
-Masons Au Pair'in dijital dönüşümüne liderlik etmek üzere Freelance Full-Stack & DevOps Mühendisi olarak görev aldım. Temel hedef, manuel süreçlere dayalı eski WordPress yapısını yüksek performanslı, otonom ve ölçeklenebilir bir dijital ekosisteme dönüştürmekti.
-
-### Zorluk
-Orijinal platform, manuel Google Formları ve parçalanmış WordPress eklentilerine dayanıyordu; bu durum 10 adımlı au-pair eşleştirme sürecinde operasyonel darboğazlara neden oluyordu. Ajansın; karmaşık iş akışlarını, doküman yönetimini ve fiziksel güvenlik donanımlarıyla gerçek zamanlı entegrasyonu yönetebilecek güvenli, merkezi bir portala ihtiyacı vardı.
-
-### Çözüm
-İş mantığını kullanıcı arayüzünden ayıran, yüksek erişilebilirlik ve hızlı ölçeklenebilirlik sağlayan "decoupled" bir mimari tasarladım ve uyguladım.
-
-- **Backend:** JSON:API standartlarında Laravel 11 API.
-- **Frontend:** SEO sıralamasını korurken SPA (Single Page Application) deneyimi sunan Nuxt.js (Vue 3).
-- **IoT Katmanı:** Fiziksel güvenlik donanımlarını yazılım platformuyla senkronize eden MQTT tabanlı köprü.
-- **Güvenilirlik:** %99.9 çalışma süresi ve otomatik hata kurtarma sağlayan özel Python izleme araçları.
+### 4. Cloud Ops & Security Hardening
+The infrastructure is fully defined as code (IaC) using **Terraform** and deployed on **AWS**.
+- **Orchestration**: AWS ECS (Fargate) for serverless container management, ensuring cost-efficiency and auto-scaling capabilities.
+- **Database**: Amazon RDS (Multi-AZ) providing automated failover and point-in-time recovery.
+- **Networking**: Tiered VPC architecture where the database and application layers are isolated in private subnets, only reachable via an Application Load Balancer (ALB).
+- **CI/CD**: A fully automated pipeline using GitHub Actions that handles multi-stage Docker builds, image scanning, and zero-downtime deployment to ECS.
 
 ---
 
-## Teknik Mimari
+## Engineering Philosophy
+The project emphasizes **Separation of Concerns**, **Security by Design**, and **Observability**. By replacing manual processes with an event-driven digital core, I reduced the agency's operational overhead by approximately 70% while providing a scalable foundation for global expansion.
 
-### Ayrıştırılmış Çekirdek (Decoupled)
-Laravel ve Nuxt.js arasındaki sorumlulukların ayrılması, ajansın bileşenleri birbirinden bağımsız olarak ölçeklendirmesine olanak tanır. API tamamen stateless (durumsuz) olup, güvenli kimlik doğrulama için AWS/Sanctum kullanır.
+---
 
-### IoT ve Donanım Entegrasyonu
-Güvenlik donanımlarından gelen gerçek zamanlı olayları yönetmek için özel bir MQTT servisi geliştirildi. Bu, fiziksel sinyallere dayalı olarak yazılım olaylarının (eşleşme güncellemeleri veya erişim kayıtları gibi) tetiklenmesini sağlar.
+# Masons Au Pair: Dijital Ekosistem Modernizasyonu
 
-### Kod Olarak Altyapı (IaC)
-Tüm teknoloji yığını Docker kullanılarak konteynerize edildi ve Terraform ile AWS ECS (Fargate) üzerinde yayına alındı. Bu yapılandırma, trafik artışlarını karşılama kapasitesini korurken maliyet etkinliği sağlar.
+**Canlı Ortam:** [masons-aupair.com](https://masons-aupair.com/)
+
+## Teknik Derin Bakış
+
+### 1. Ayrıştırılmış (Decoupled) Mikro Mimari
+Platform, tamamen "headless" bir felsefe üzerine inşa edilmiştir.
+- **Backend (Laravel 11)**: Tamamen stateless bir RESTful API olarak çalışır. Veri dönüşümü için **API Resources**, çok katmanlı doğrulama için **Form Requests** kullanır. 
+- **Frontend (Nuxt 3)**: Sayfa yükleme sürelerini optimize etmek ve SEO performansını en üst düzeye çıkarmak için **SSR (Server-Side Rendering)** kullanır. **Pinia** ile yönetilen reaktif state yapısı, portal genelinde veri tutarlılığını garanti eder.
+
+### 2. Olay Güdümlü (Event-Driven) IoT Entegrasyonu
+Projenin en gelişmiş özelliklerinden biri, fiziksel donanım senkronizasyon katmanıdır.
+- **Protokol**: TLS/SSL üzerinden MQTT.
+- **Mantık**: Fiziksel donanım olaylarını Laravel'in iç Event sistemine bağlayan özel bir `MqttService` geliştirdim. Bir donanım tetikleyicisi alındığında, sistem asenkron bir olay başlatarak anlık bildirimler veya durum güncellemeleri gibi işlemlerin decoupled olarak yürütülmesini sağlar.
+
+### 3. Güvenilirlik Mühendisliği ve Kendi Kendini İyileştirme
+%99.9 çalışma süresini garanti etmek için Python ile özel bir "Watchdog" izleme seti uyguladım.
+- **Servis İzleme**: PHP-FPM, Nginx ve MQTT Broker sağlığını her 30 saniyede bir doğrular.
+- **Otomatik Kurtarma**: Bir servis hatası tespit edildiğinde, script otomatik bir kurtarma dizisi (Self-healing) başlatır.
+- **Log Watchdog**: Uygulama loglarını gerçek zamanlı tarayarak kritik hataları kullanıcılar fark etmeden önce raporlar.
+
+### 4. Bulut Operasyonları ve Güvenlik Sıkılaştırma
+Altyapı, **Terraform** kullanılarak kod olarak tanımlanmış ve **AWS** üzerinde yayına alınmıştır.
+- **Orchestration**: AWS ECS (Fargate) ile sunucusuz konteyner yönetimi ve otomatik ölçeklendirme.
+- **Veritabanı**: Amazon RDS (Multi-AZ) ile otomatik failover ve zamanlanmış yedekleme.
+- **Güvenlik**: Veritabanı ve uygulama katmanlarının özel subnet'lerde izole edildiği, sadece ALB üzerinden erişilebilen katmanlı bir VPC mimarisi.
