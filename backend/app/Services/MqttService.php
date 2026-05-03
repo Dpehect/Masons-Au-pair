@@ -7,6 +7,11 @@ use PhpMqtt\Client\ConnectionSettings;
 use App\Events\HardwareEventReceived;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * MqttService acts as a singleton bridge between the Laravel application and IoT hardware.
+ * It implements the Pub/Sub pattern to synchronize physical security events with 
+ * the platform's event-driven architecture.
+ */
 class MqttService
 {
     protected $client;

@@ -19,7 +19,11 @@ CONFIG = {
     'check_interval': 30
 }
 
-logging.basicConfig(filename='reliability.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+"""
+MasonsMonitor: A lightweight reliability engineering tool designed to ensure 99.9% uptime.
+It proactively monitors system resources, validates service health (Nginx, PHP-FPM, MQTT),
+and performs real-time log analysis to trigger automated self-healing procedures.
+"""
 
 class MasonsMonitor:
     def __init__(self):

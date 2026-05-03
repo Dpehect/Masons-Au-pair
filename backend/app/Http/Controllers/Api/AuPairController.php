@@ -9,6 +9,11 @@ use App\Http\Resources\AuPairResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
+/**
+ * AuPairController handles the business logic for Au Pair discovery and management.
+ * It follows the JSON:API specification for resource modeling and utilizes 
+ * Laravel's FormRequests for robust validation and API Resources for consistent data transformation.
+ */
 class AuPairController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
