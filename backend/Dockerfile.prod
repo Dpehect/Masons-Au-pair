@@ -1,0 +1,47 @@
+# Stage 1: Build PHP dependencies
+FROM php:8.3-fpm-alpine as build
+
+WORKDIR /var/www/html
+
+# Install system dependencies
+RUN apk add --no-cache \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    zip \
+    libzip-dev \
+    unzip \
+    git \
+    oniguruma-dev \
+    postgresql-dev
+
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy application files
+COPY . .
+
+# Run composer install
+RUN composer install --no-dev --optimize-autoloader
+
+# Stage 2: Production Image
+FROM php:8.3-fpm-alpine
+
+WORKDIR /var/www/html
+
+# Install only necessary extensions for runtime
+RUN apk add --no-cache libpng libjpeg-turbo freetype libzip postgresql-libs
+RUN docker-php-ext-install pdo_mysql gd zip bcmath
+
+# Copy vendor and application from build stage
+COPY --from=build /var/www/html /var/www/html
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+USER www-data
+
+EXPOSE 9000
+CMD ["php-fpm"]

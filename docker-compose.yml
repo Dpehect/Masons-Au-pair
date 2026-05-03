@@ -1,0 +1,49 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: masons-backend
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=base64:fH/5Xk+W7vR1m7Vn3W9zZ2o8v5l9v0P1Q2R3S4T5U6V=
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=masons_db
+      - DB_USERNAME=masons_user
+      - DB_PASSWORD=masons_pass
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: masons-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: masons_db
+      MYSQL_USER: masons_user
+      MYSQL_PASSWORD: masons_pass
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - db_data:/var/lib/mysql
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: masons-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  db_data:

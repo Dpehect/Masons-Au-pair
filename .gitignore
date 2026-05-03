@@ -1,0 +1,12 @@
+/node_modules
+/vendor
+/.env
+/*.log
+/db_data
+.DS_Store
+backend/.env
+frontend/.nuxt
+frontend/.output
+frontend/node_modules
+backend/vendor
+backend/storage/*.key

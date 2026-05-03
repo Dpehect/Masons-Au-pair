@@ -1,0 +1,14 @@
+[Unit]
+Description=Masons System Reliability Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/c/Users/USER/Desktop/denemeler/masonsaupair/scripts
+ExecStart=/usr/bin/python3 masons_monitor.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
